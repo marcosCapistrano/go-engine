@@ -3,6 +3,7 @@ package systems
 import (
 	"engine/ecs"
 	"engine/game/components"
+	"engine/math/vector"
 )
 
 // Movement ...
@@ -18,10 +19,17 @@ func (a *Movement) Error() (err error) {
 func (a *Movement) Setup() {}
 
 func (a *Movement) Process(registry ecs.Registry) {
+	gravity := vector.Vector{X: 0, Y: 2}
 	for _, e := range registry.FilterByMask(components.MaskPosition | components.MaskVelocity) {
 		position := e.Get(components.MaskPosition).(*components.Position)
 		velocity := e.Get(components.MaskVelocity).(*components.Velocity)
+		acceleration := e.Get(components.MaskAcceleration).(*components.Acceleration)
+
+		acceleration.Add(gravity)
+		velocity.Add(acceleration.Vector)
 		position.Add(velocity.Mult(*a.deltaTime))
+
+		acceleration.Vector = acceleration.Mult(0)
 	}
 }
 
