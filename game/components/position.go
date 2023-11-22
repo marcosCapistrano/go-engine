@@ -7,20 +7,20 @@ import (
 
 // Position ...
 type Position struct {
-	ID            string `json:"id"`
-	vector.Vector `json:"position"`
+	ID             string `json:"id"`
+	vector.Vector2 `json:"position"`
 }
 
 func (a *Position) Mask() uint64 {
 	return MaskPosition
 }
 
-func (a *Position) WithX(x float32) *Position {
+func (a *Position) WithX(x float64) *Position {
 	a.X = x
 	return a
 }
 
-func (a *Position) WithY(y float32) *Position {
+func (a *Position) WithY(y float64) *Position {
 	a.Y = y
 	return a
 }

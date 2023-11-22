@@ -7,15 +7,11 @@ type Vector2 struct {
 	Y float64
 }
 
-func New(x, y float64) Vector2 {
+func NewVector2(x, y float64) Vector2 {
 	return Vector2{
 		X: x,
 		Y: y,
 	}
-}
-
-func (vec Vector2) Mag() float64 {
-	return math.Sqrt((float64(vec.X) * float64(vec.X)) + (float64(vec.Y) * float64(vec.Y)))
 }
 
 func (vec1 *Vector2) Add(vec2 Vector2) {
@@ -28,20 +24,66 @@ func (vec1 *Vector2) Sub(vec2 Vector2) {
 	vec1.Y -= vec2.Y
 }
 
-func (vec Vector2) Mult(n float64) Vector2 {
+func (vec *Vector2) Scale(n float64) {
 	vec.X *= n
 	vec.Y *= n
+}
+
+func (vec Vector2) Rotate(angle float64) Vector2 {
+	result := Vector2{}
+	result.X = vec.X*math.Cos(angle) - vec.Y*math.Sin(angle)
+	result.Y = vec.X*math.Sin(angle) + vec.Y*math.Cos(angle)
+
+	return result
+}
+
+func (vec Vector2) Mag() float64 {
+	return math.Sqrt(vec.X*vec.X + vec.Y*vec.Y)
+}
+
+func (vec Vector2) MagSqr() float64 {
+	return vec.X*vec.X + vec.Y*vec.Y
+}
+
+func (vec *Vector2) Normalize() *Vector2 {
+	length := vec.Mag()
+	if length != 0 {
+		vec.X /= length
+		vec.Y /= length
+	}
 
 	return vec
 }
 
-func (vec *Vector2) Dot(vec2 Vector2) float64 {
-	return vec2.X*vec2.X + vec.Y*vec2.Y
+func (vec Vector2) UnitVector() Vector2 {
+	result := Vector2{}
+
+	length := vec.Mag()
+	if length != 0 {
+		result.X /= length
+		result.Y /= length
+	}
+
+	return result
 }
 
-func (vec *Vector2) Normal() Vector2 {
-	return Vector2{
+func (vec Vector2) Normal() Vector2 {
+	result := &Vector2{
 		X: vec.Y,
 		Y: -vec.X,
 	}
+
+	return *result.Normalize()
+}
+
+func (vec Vector2) Dot(vec2 Vector2) float64 {
+	return vec.X*vec2.X + vec.Y*vec2.Y
+}
+
+func (vec Vector2) Cross(vec2 Vector2) float64 {
+	return vec.X*vec2.Y - vec.Y*vec2.X
+}
+
+func (vec Vector2) Equals(vec2 Vector2) bool {
+	return vec.X == vec2.X && vec.Y == vec2.Y
 }

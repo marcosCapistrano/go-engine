@@ -5,13 +5,13 @@ import (
 	"engine/ecs"
 	"engine/game/components"
 	"engine/game/systems"
-	"fmt"
 
 	"github.com/veandco/go-sdl2/sdl"
 )
 
 const FPS uint64 = 60
 const MILLISECS_PER_FRAME uint64 = 1000 / FPS
+const PIXELS_PER_METER = 50
 
 var deltaTime float32
 
@@ -97,6 +97,7 @@ func (g *Game) setup() {
 		components.NewSize().(*components.Size).WithWidth(32).WithHeight(32),
 		components.NewVelocity().(*components.Velocity).WithX(1).WithY(2),
 		components.NewAcceleration().(*components.Acceleration).WithX(0).WithY(0),
+		components.NewMass().(*components.Mass).WithValue(2),
 	})
 
 	player2 := ecs.NewEntity("player2", []ecs.Component{
@@ -105,6 +106,15 @@ func (g *Game) setup() {
 		components.NewVelocity().(*components.Velocity).WithX(30).WithY(100),
 		components.NewAcceleration().(*components.Acceleration).WithX(0).WithY(0),
 		components.NewBoxCollider().(*components.BoxCollider).WithWidth(32).WithHeight(32),
+		components.NewMass().(*components.Mass).WithValue(1),
+	})
+
+	particle := ecs.NewEntity("particle", []ecs.Component{
+		components.NewPosition().(*components.Position).WithX(500).WithY(500),
+		components.NewSize().(*components.Size).WithWidth(2).WithHeight(2),
+		components.NewVelocity().(*components.Velocity).WithX(0).WithY(0),
+		components.NewAcceleration().(*components.Acceleration).WithX(0).WithY(0),
+		components.NewMass().(*components.Mass).WithValue(1),
 	})
 
 	platformCount, _ := config.GetInt("platforms:count")
@@ -113,11 +123,9 @@ func (g *Game) setup() {
 	ws, _ := config.GetSliceOfInt("platforms:w")
 	hs, _ := config.GetSliceOfInt("platforms:h")
 
-	fmt.Println(platformCount, xs, ys)
-
 	for i := 0; i < platformCount; i++ {
 		platform := ecs.NewEntity("platform", []ecs.Component{
-			components.NewPosition().(*components.Position).WithX(float32(xs[i])).WithY(float32(ys[i])),
+			components.NewPosition().(*components.Position).WithX(xs[i]).WithY(ys[i]),
 			components.NewSize().(*components.Size).WithWidth(float32(ws[i])).WithHeight(float32(hs[i])),
 			components.NewBoxCollider().(*components.BoxCollider).WithWidth(int(ws[i])).WithHeight(int(hs[i])),
 		})
@@ -132,6 +140,7 @@ func (g *Game) setup() {
 
 	g.registry.AddEntities(player)
 	g.registry.AddEntities(player2)
+	g.registry.AddEntities(particle)
 
 	g.registry.AddSystems(renderingSystem)
 	g.registry.AddSystems(movementSystem)
