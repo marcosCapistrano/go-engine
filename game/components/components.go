@@ -7,4 +7,7 @@ const (
 	MaskAcceleration = uint64(1 << 3)
 	MaskBoxCollider  = uint64(1 << 4)
 	MaskMass         = uint64(1 << 5)
+	MaskRotation     = uint64(1 << 6)
+	MaskShape        = uint64(1 << 7)
+	MaskCenterOfMass = uint64(1 << 8)
 )

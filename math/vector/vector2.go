@@ -14,19 +14,25 @@ func NewVector2(x, y float64) Vector2 {
 	}
 }
 
-func (vec1 *Vector2) Add(vec2 Vector2) {
+func (vec1 *Vector2) Add(vec2 Vector2) Vector2 {
 	vec1.X += vec2.X
 	vec1.Y += vec2.Y
+
+	return *vec1
 }
 
-func (vec1 *Vector2) Sub(vec2 Vector2) {
+func (vec1 *Vector2) Sub(vec2 Vector2) Vector2 {
 	vec1.X -= vec2.X
 	vec1.Y -= vec2.Y
+
+	return *vec1
 }
 
-func (vec *Vector2) Scale(n float64) {
+func (vec *Vector2) Scale(n float64) Vector2 {
 	vec.X *= n
 	vec.Y *= n
+
+	return *vec
 }
 
 func (vec Vector2) Rotate(angle float64) Vector2 {
