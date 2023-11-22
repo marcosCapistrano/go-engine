@@ -13,7 +13,7 @@ const FPS uint64 = 60
 const MILLISECS_PER_FRAME uint64 = 1000 / FPS
 const PIXELS_PER_METER = 50
 
-var deltaTime float32
+var deltaTime float64
 
 type Game struct {
 	isRunning          bool
@@ -67,7 +67,7 @@ func (g *Game) Run() {
 			sdl.Delay(uint32(timeToWait))
 		}
 
-		deltaTime = float32(sdl.GetTicks64()-g.millisecsPrevFrame) / 1000.0
+		deltaTime = float64(sdl.GetTicks64()-g.millisecsPrevFrame) / 1000.0
 		g.millisecsPrevFrame = sdl.GetTicks64()
 		g.processInput()
 
@@ -95,18 +95,18 @@ func (g *Game) setup() {
 	player := ecs.NewEntity("player", []ecs.Component{
 		components.NewPosition().(*components.Position).WithX(0).WithY(0),
 		components.NewSize().(*components.Size).WithWidth(32).WithHeight(32),
-		components.NewVelocity().(*components.Velocity).WithX(1).WithY(2),
+		components.NewVelocity().(*components.Velocity).WithX(0).WithY(0),
 		components.NewAcceleration().(*components.Acceleration).WithX(0).WithY(0),
-		components.NewMass().(*components.Mass).WithValue(2),
+		components.NewMass().(*components.Mass).WithValue(800),
 	})
 
 	player2 := ecs.NewEntity("player2", []ecs.Component{
 		components.NewPosition().(*components.Position).WithX(0).WithY(0),
 		components.NewSize().(*components.Size).WithWidth(32).WithHeight(32),
-		components.NewVelocity().(*components.Velocity).WithX(30).WithY(100),
+		components.NewVelocity().(*components.Velocity).WithX(0).WithY(0),
 		components.NewAcceleration().(*components.Acceleration).WithX(0).WithY(0),
 		components.NewBoxCollider().(*components.BoxCollider).WithWidth(32).WithHeight(32),
-		components.NewMass().(*components.Mass).WithValue(1),
+		components.NewMass().(*components.Mass).WithValue(5),
 	})
 
 	particle := ecs.NewEntity("particle", []ecs.Component{
@@ -114,7 +114,7 @@ func (g *Game) setup() {
 		components.NewSize().(*components.Size).WithWidth(2).WithHeight(2),
 		components.NewVelocity().(*components.Velocity).WithX(0).WithY(0),
 		components.NewAcceleration().(*components.Acceleration).WithX(0).WithY(0),
-		components.NewMass().(*components.Mass).WithValue(1),
+		components.NewMass().(*components.Mass).WithValue(5),
 	})
 
 	platformCount, _ := config.GetInt("platforms:count")

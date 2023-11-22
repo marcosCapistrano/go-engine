@@ -5,13 +5,12 @@ import (
 	"engine/game/components"
 	"engine/math/vector"
 	"engine/util"
-	"fmt"
 )
 
 // Movement ...
 type Movement struct {
 	err       error
-	deltaTime *float32
+	deltaTime *float64
 }
 
 func (a *Movement) Error() (err error) {
@@ -29,26 +28,19 @@ func (a *Movement) Process(registry ecs.Registry) {
 		acceleration := e.Get(components.MaskAcceleration).(*components.Acceleration)
 		mass := e.Get(components.MaskMass).(*components.Mass)
 
-		fmt.Println("------")
+		// Vector2.Scale() return Vector2
+		weight := gravity.Scale(mass.Mass)
+		drag := vector.GenerateDragForce(velocity.Vector2, 2)
+		spring := vector.Vector2{}
+
 		forces := vector.Vector2{}
-		fmt.Println("forces", forces)
 
-		weight := gravity
-		weight.Scale(mass.Mass)
-		fmt.Println("weight", weight)
-
-		forces.Add(weight)
-		forces.Scale(1 / mass.Mass)
-		fmt.Println("canceled", forces)
-
-		acceleration.Add(forces)
-
-		acceleration.Scale(float64(*a.deltaTime))
-		velocity.Add(acceleration.Vector2)
-		velocity.Scale(float64(*a.deltaTime))
-		position.Add(velocity.Vector2)
-
-		forces.Scale(0)
+		forces = forces.Add(weight)
+		forces = forces.Add(drag)
+		forces = forces.Add(spring)
+		acceleration.Vector2 = forces.Scale(*a.deltaTime / mass.Mass)
+		velocity.Vector2 = velocity.Add(acceleration.Vector2.Scale(*a.deltaTime))
+		position.Vector2 = position.Add(velocity.Vector2.Scale(*a.deltaTime))
 	}
 }
 
@@ -56,7 +48,7 @@ func (a *Movement) Teardown() {
 
 }
 
-func (m *Movement) WithData(deltaTime *float32) *Movement {
+func (m *Movement) WithData(deltaTime *float64) *Movement {
 	m.deltaTime = deltaTime
 	return m
 }
