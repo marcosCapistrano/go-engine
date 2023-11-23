@@ -30,15 +30,13 @@ func (a *Movement) Process(registry ecs.Registry) {
 
 		// Vector2.Scale() return Vector2
 		weight := gravity.Scale(mass.Mass)
-		drag := vector.GenerateDragForce(velocity.Vector2, 2)
-		spring := vector.Vector2{}
+		drag := vector.GenerateDragForce(velocity.Vector2, 0.2)
 
 		forces := vector.Vector2{}
 
-		forces = forces.Add(weight)
+		forces = forces.Add(weight).Scale(1 / mass.Mass)
 		forces = forces.Add(drag)
-		forces = forces.Add(spring)
-		acceleration.Vector2 = forces.Scale(*a.deltaTime / mass.Mass)
+		acceleration.Vector2 = forces.Scale(*a.deltaTime)
 		velocity.Vector2 = velocity.Add(acceleration.Vector2.Scale(*a.deltaTime))
 		position.Vector2 = position.Add(velocity.Vector2.Scale(*a.deltaTime))
 	}
