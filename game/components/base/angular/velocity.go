@@ -1,4 +1,4 @@
-package components
+package angular
 
 import (
 	"engine/ecs"
