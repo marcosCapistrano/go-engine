@@ -5,7 +5,6 @@ import (
 	"engine/game/components"
 	"engine/math/forces"
 	"engine/util"
-	"fmt"
 	"math"
 )
 
@@ -38,7 +37,6 @@ func (system *Movement) Process(registry ecs.Registry) {
 		linearMotion.Integrate(&position.Vector, mass.Inverse, *system.deltaTime)
 
 		angularMotion.AddTorque(100)
-		fmt.Println(momentOfInertia)
 		angularMotion.Integrate(&rotation.Value, momentOfInertia.Inverse, *system.deltaTime)
 
 		if rotation.Value > 360 {

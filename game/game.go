@@ -37,7 +37,7 @@ func (g *Game) Initialize() {
 		panic(err)
 	}
 
-	windowWidth := 800
+	windowWidth := 1920
 	windowHeight := 600
 
 	window, err := sdl.CreateWindow("2D Game Engine", sdl.WINDOWPOS_CENTERED, sdl.WINDOWPOS_CENTERED, int32(windowWidth), int32(windowHeight), sdl.WINDOW_BORDERLESS)
@@ -50,7 +50,7 @@ func (g *Game) Initialize() {
 		panic(err)
 	}
 
-	window.SetFullscreen(sdl.WINDOW_FULLSCREEN)
+	//window.SetFullscreen(sdl.WINDOW_FULLSCREEN_DESKTOP)
 
 	g.window = window
 	g.renderer = renderer
