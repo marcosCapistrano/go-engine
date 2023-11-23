@@ -7,7 +7,7 @@ import (
 
 func Weight(mass float64) vector.Vector2 {
 	gravity := vector.Vector2{X: 0, Y: util.GRAVITY_MS * util.PIXELS_PER_METER}
-	return gravity.Scale(mass)
+	return gravity
 }
 
 func Drag(velocity vector.Vector2, k float64) vector.Vector2 {

@@ -5,6 +5,8 @@ import (
 	"engine/ecs"
 	"engine/game/entities"
 	"engine/game/systems"
+	"math/rand"
+	"time"
 
 	"github.com/veandco/go-sdl2/sdl"
 )
@@ -91,6 +93,16 @@ func (g *Game) setup() {
 
 	g.config = config
 	g.registry = ecs.NewRegistry()
+
+	go func() {
+		for i := 0; i < 1000; i++ {
+			go func() {
+				e := ecs.NewEntity("player", entities.NewCircle(rand.Float64()*1280, rand.Float64()*300, 0, 1+rand.Float64()*8, 8))
+				g.registry.AddEntities(e)
+			}()
+			time.Sleep(time.Millisecond * 500)
+		}
+	}()
 
 	player := ecs.NewEntity("player", entities.NewCircle(0, 0, 0, 4, 16))
 	player2 := ecs.NewEntity("player2", entities.NewCircle(100, 0, 0, 4, 14))
