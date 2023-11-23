@@ -35,12 +35,12 @@ func (a *Shape) Mask() uint64 {
 func (a *Shape) UpdateVertices(position vector.Vector2, rotation float64) {
 	if a.Type != CircleType {
 		for i := 0; i < len(a.LocalVertices); i++ {
-			//a.WorldVertices[i] = a.LocalVertices[i].Rotate(rotation)
+			a.WorldVertices[i] = a.LocalVertices[i].Rotate(rotation)
 		}
 	}
 
 	for i := 0; i < len(a.LocalVertices); i++ {
-		//a.WorldVertices[i] = a.LocalVertices[i].Add(position)
+		a.WorldVertices[i] = a.WorldVertices[i].Add(position)
 	}
 }
 
@@ -48,5 +48,13 @@ func (a *Shape) UpdateVertices(position vector.Vector2, rotation float64) {
 func NewShape() ecs.Component {
 	return &Shape{
 		ID: "shape",
+	}
+}
+
+func NewCircle(radius float64) ecs.Component {
+	return &Shape{
+		ID:     "shape",
+		Type:   CircleType,
+		Radius: radius,
 	}
 }

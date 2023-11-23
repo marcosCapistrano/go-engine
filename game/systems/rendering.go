@@ -40,6 +40,8 @@ func (a *Rendering) Process(registry ecs.Registry) {
 		switch shape.Type {
 		case components.CircleType:
 			drawCircle(a.renderer, position.Vector, shape.Radius, rotation.Value)
+		case components.BoxType:
+			drawBox(a.renderer, position.Vector, shape.WorldVertices, rotation.Value)
 		}
 	}
 
@@ -84,4 +86,21 @@ func drawCircle(renderer *sdl.Renderer, position vector.Vector2, radius, rotatio
 	dy := radius * math.Sin(rotationAngle)
 
 	renderer.DrawLine(int32(position.X), int32(position.Y), int32(position.X+dx), int32(position.Y+dy))
+}
+
+func drawBox(renderer *sdl.Renderer, position vector.Vector2, vertices []vector.Vector2, rotationAngle float64) {
+	for i, vec := range vertices {
+		// Draw a point at the vector's position
+		renderer.DrawPoint(int32(vec.X), int32(vec.Y))
+
+		// If this isn't the first vector, draw a line from the previous vector to this one
+		if i > 0 {
+			prevVec := vertices[i-1]
+			renderer.DrawLine(int32(prevVec.X), int32(prevVec.Y), int32(vec.X), int32(vec.Y))
+		}
+	}
+
+	lastVec := vertices[len(vertices)-1]
+	firstVec := vertices[0]
+	renderer.DrawLine(int32(firstVec.X), int32(firstVec.Y), int32(lastVec.X), int32(lastVec.Y))
 }

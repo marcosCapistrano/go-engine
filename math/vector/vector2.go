@@ -1,6 +1,8 @@
 package vector
 
-import "math"
+import (
+	"math"
+)
 
 type Vector2 struct {
 	X float64

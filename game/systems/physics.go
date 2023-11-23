@@ -5,6 +5,8 @@ import (
 	"engine/game/components"
 	"engine/math/forces"
 	"engine/util"
+	"fmt"
+	"math"
 )
 
 // Movement ...
@@ -21,7 +23,7 @@ func (a *Movement) Setup() {}
 
 func (system *Movement) Process(registry ecs.Registry) {
 
-	mask := components.MaskLinearMotion & components.MaskAngularAcceleration
+	mask := components.MaskLinearMotion & components.MaskAngularAcceleration & components.MaskRotation
 	for _, e := range registry.FilterByMask(mask) {
 		mass := e.Get(components.MaskMass).(*components.Mass)
 		momentOfInertia := e.Get(components.MaskMomentOfInertia).(*components.MomentOfInertia)
@@ -35,8 +37,13 @@ func (system *Movement) Process(registry ecs.Registry) {
 		linearMotion.AddForce(forces.Drag(linearMotion.Velocity, util.DRAG_COEFF))
 		linearMotion.Integrate(&position.Vector, mass.Inverse, *system.deltaTime)
 
-		angularMotion.AddTorque(20)
+		angularMotion.AddTorque(100)
+		fmt.Println(momentOfInertia)
 		angularMotion.Integrate(&rotation.Value, momentOfInertia.Inverse, *system.deltaTime)
+
+		if rotation.Value > 360 {
+			rotation.Value = math.Mod(rotation.Value, 360)
+		}
 
 		shape.UpdateVertices(position.Vector, rotation.Value)
 	}

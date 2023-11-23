@@ -3,7 +3,6 @@ package forces
 import (
 	"engine/math/vector"
 	"engine/util"
-	"fmt"
 )
 
 func Weight(mass float64) vector.Vector2 {
@@ -42,7 +41,6 @@ func GenerateSpringForce(vec vector.Vector2, anchor vector.Vector2, restLength f
 	d := vec.Sub(anchor)
 
 	displacement := d.Mag() - restLength
-	fmt.Println("disp", displacement)
 
 	springDirection := d.UnitVector()
 	springMag := -k * displacement

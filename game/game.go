@@ -3,9 +3,8 @@ package game
 import (
 	"engine/config"
 	"engine/ecs"
-	"engine/game/components"
+	"engine/game/entities"
 	"engine/game/systems"
-	"engine/math/vector"
 
 	"github.com/veandco/go-sdl2/sdl"
 )
@@ -93,41 +92,20 @@ func (g *Game) setup() {
 	g.config = config
 	g.registry = ecs.NewRegistry()
 
-	player := ecs.NewEntity("player", []ecs.Component{
-		&components.Position{
-			Vector: vector.Vector2{X: 0, Y: 0},
-		},
-		&components.Rotation{
-			Value: 0,
-		},
-		&components.Mass{
-			Value:   1,
-			Inverse: 1,
-		},
-		&components.MomentOfInertia{
-			Value:   0.5,
-			Inverse: 2,
-		},
-		&components.LinearMotion{
-			Velocity:     vector.NewVector2(0, 0),
-			Acceleration: vector.NewVector2(0, 0),
-			Forces:       vector.NewVector2(0, 0),
-		},
-		&components.AngularMotion{
-			Velocity:     0,
-			Acceleration: 0,
-			Torque:       0,
-		},
-		&components.Shape{
-			Type:   components.CircleType,
-			Radius: 40,
-		},
-	})
+	player := ecs.NewEntity("player", entities.NewCircle(0, 0, 0, 4, 16))
+	player2 := ecs.NewEntity("player2", entities.NewCircle(100, 0, 0, 4, 14))
+	player3 := ecs.NewEntity("player3", entities.NewCircle(200, 0, 0, 4, 40))
+	player4 := ecs.NewEntity("player4", entities.NewCircle(300, 0, 0, 4, 24))
+	player5 := ecs.NewEntity("player5", entities.NewBox(400, 0, 0, 4, 100, 100))
 
 	renderingSystem := systems.NewRendering(g.renderer)
 	movementSystem := systems.NewMovement().(*systems.Movement).WithData(&deltaTime)
 
 	g.registry.AddEntities(player)
+	g.registry.AddEntities(player2)
+	g.registry.AddEntities(player3)
+	g.registry.AddEntities(player4)
+	g.registry.AddEntities(player5)
 
 	g.registry.AddSystems(renderingSystem)
 	g.registry.AddSystems(movementSystem)
