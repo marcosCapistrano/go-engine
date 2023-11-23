@@ -3,6 +3,7 @@ package systems
 import (
 	"engine/ecs"
 	"engine/game/components"
+	"engine/math/vector"
 	"math"
 
 	"github.com/veandco/go-sdl2/sdl"
@@ -28,16 +29,17 @@ func (a *Rendering) Process(registry ecs.Registry) {
 	a.renderer.SetDrawColor(0, 0, 0, 255)
 	a.renderer.Clear()
 
-	for _, e := range registry.FilterByMask(components.MaskPosition | components.MaskShape | components.MaskRotation) {
-		position := e.Get(components.MaskPosition).(*components.Position)
+	mask := components.MaskShape & components.MaskPosition & components.MaskRotation
+	for _, e := range registry.FilterByMask(mask) {
 		shape := e.Get(components.MaskShape).(*components.Shape)
+		position := e.Get(components.MaskPosition).(*components.Position)
 		rotation := e.Get(components.MaskRotation).(*components.Rotation)
 
 		a.renderer.SetDrawColor(255, 0, 0, 255)
 
 		switch shape.Type {
-		case "circle":
-			drawCircle(a.renderer, position.X, position.Y, shape.Radius, rotation.Angle)
+		case components.CircleType:
+			drawCircle(a.renderer, position.Vector, shape.Radius, rotation.Value)
 		}
 	}
 
@@ -65,7 +67,7 @@ func NewRendering(renderer *sdl.Renderer) ecs.System {
 	}
 }
 
-func drawCircle(renderer *sdl.Renderer, x, y, radius, rotationAngle float64) {
+func drawCircle(renderer *sdl.Renderer, position vector.Vector2, radius, rotationAngle float64) {
 	var angle float64 = 0
 
 	for i := 0; i < 360; i++ {
@@ -73,7 +75,7 @@ func drawCircle(renderer *sdl.Renderer, x, y, radius, rotationAngle float64) {
 		dx := radius * math.Cos(angle)
 		dy := radius * math.Sin(angle)
 
-		renderer.DrawPoint(int32(x+dx), int32(y+dy))
+		renderer.DrawPoint(int32(position.X+dx), int32(position.Y+dy))
 	}
 
 	// Draw a line in the middle for debugging rotation
@@ -81,5 +83,5 @@ func drawCircle(renderer *sdl.Renderer, x, y, radius, rotationAngle float64) {
 	dx := radius * math.Cos(rotationAngle)
 	dy := radius * math.Sin(rotationAngle)
 
-	renderer.DrawLine(int32(x), int32(y), int32(x+dx), int32(y+dy))
+	renderer.DrawLine(int32(position.X), int32(position.Y), int32(position.X+dx), int32(position.Y+dy))
 }

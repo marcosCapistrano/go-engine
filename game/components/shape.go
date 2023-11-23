@@ -2,60 +2,46 @@ package components
 
 import (
 	"engine/ecs"
+	"engine/math/vector"
 )
 
 // ShapeType represents the type of shape.
 type ShapeType string
 
 const (
-	CircleType    ShapeType = "circle"
-	RectangleType ShapeType = "rectangle"
-	TriangleType  ShapeType = "triangle"
-	PolygonType   ShapeType = "polygon"
+	CircleType   ShapeType = "circle"
+	BoxType      ShapeType = "box"
+	TriangleType ShapeType = "triangle"
+	PolygonType  ShapeType = "polygon"
 )
 
 // Shape ...
 type Shape struct {
-	ID     string    `json:"id"`
-	Type   ShapeType `json:"type"`
-	Radius float64   `json:"radius,omitempty"`
-	Width  float64   `json:"width,omitempty"`
-	Height float64   `json:"height,omitempty"`
-	Sides  []float64 `json:"sides,omitempty"`
+	ID       string           `json:"id"`
+	Type     ShapeType        `json:"type"`
+	Radius   float64          `json:"radius,omitempty"`
+	Width    float64          `json:"width,omitempty"`
+	Height   float64          `json:"height,omitempty"`
+	Vertices []vector.Vector2 `json:"sides,omitempty"`
+
+	LocalVertices []vector.Vector2
+	WorldVertices []vector.Vector2
 }
 
 func (a *Shape) Mask() uint64 {
 	return MaskShape
 }
 
-// WithRadius sets the radius of the circle.
-func (s *Shape) WithRadius(radius float64) *Shape {
-	s.Radius = radius
-	return s
-}
+func (a *Shape) UpdateVertices(position vector.Vector2, rotation float64) {
+	if a.Type != CircleType {
+		for i := 0; i < len(a.LocalVertices); i++ {
+			//a.WorldVertices[i] = a.LocalVertices[i].Rotate(rotation)
+		}
+	}
 
-// WithWidth sets the width of the rectangle.
-func (s *Shape) WithWidth(width float64) *Shape {
-	s.Width = width
-	return s
-}
-
-// WithHeight sets the height of the rectangle.
-func (s *Shape) WithHeight(height float64) *Shape {
-	s.Height = height
-	return s
-}
-
-// WithSides sets the sides of the polygon.
-func (s *Shape) WithSides(sides []float64) *Shape {
-	s.Sides = sides
-	return s
-}
-
-// WithType sets the type of the shape.
-func (s *Shape) WithType(shapeType ShapeType) *Shape {
-	s.Type = shapeType
-	return s
+	for i := 0; i < len(a.LocalVertices); i++ {
+		//a.WorldVertices[i] = a.LocalVertices[i].Add(position)
+	}
 }
 
 // NewRotation ...

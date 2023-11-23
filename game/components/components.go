@@ -13,4 +13,7 @@ const (
 	MaskAngularAcceleration = uint64(1 << 9)
 	MaskAngularVelocity     = uint64(1 << 10)
 	MaskMomentOfInertia     = uint64(1 << 11)
+	MaskRigidBody           = uint64(1 << 12)
+	MaskLinearMotion        = uint64(1 << 13)
+	MaskAngularMotion       = uint64(1 << 14)
 )

@@ -5,6 +5,7 @@ import (
 	"engine/ecs"
 	"engine/game/components"
 	"engine/game/systems"
+	"engine/math/vector"
 
 	"github.com/veandco/go-sdl2/sdl"
 )
@@ -93,24 +94,41 @@ func (g *Game) setup() {
 	g.registry = ecs.NewRegistry()
 
 	player := ecs.NewEntity("player", []ecs.Component{
-		components.NewPosition().(*components.Position).WithX(0).WithY(0),
-		components.NewVelocity().(*components.Velocity).WithX(1000).WithY(0),
-		components.NewAcceleration().(*components.Acceleration).WithX(1000).WithY(0),
-		components.NewMass().(*components.Mass).WithValue(8),
-		components.NewRotation().(*components.Rotation).WithAngle(0),
-		components.NewShape().(*components.Shape).WithType("circle").WithRadius(20),
-		components.NewAngularVelocity().(*components.AngularVelocity).WithAngularVelocity(0),
-		components.NewAngularAcceleration().(*components.AngularAcceleration).WithAngularAcceleration(0),
-		components.NewMomentOfInertia().(*components.MomentOfInertia).WithMomentOfInertia(1),
+		&components.Position{
+			Vector: vector.Vector2{X: 0, Y: 0},
+		},
+		&components.Rotation{
+			Value: 0,
+		},
+		&components.Mass{
+			Value:   1,
+			Inverse: 1,
+		},
+		&components.MomentOfInertia{
+			Value:   0.5,
+			Inverse: 2,
+		},
+		&components.LinearMotion{
+			Velocity:     vector.NewVector2(0, 0),
+			Acceleration: vector.NewVector2(0, 0),
+			Forces:       vector.NewVector2(0, 0),
+		},
+		&components.AngularMotion{
+			Velocity:     0,
+			Acceleration: 0,
+			Torque:       0,
+		},
+		&components.Shape{
+			Type:   components.CircleType,
+			Radius: 40,
+		},
 	})
 
 	renderingSystem := systems.NewRendering(g.renderer)
 	movementSystem := systems.NewMovement().(*systems.Movement).WithData(&deltaTime)
-	collisionSystem := systems.NewCollision().(*systems.Collision)
 
 	g.registry.AddEntities(player)
 
 	g.registry.AddSystems(renderingSystem)
 	g.registry.AddSystems(movementSystem)
-	g.registry.AddSystems(collisionSystem)
 }
