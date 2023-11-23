@@ -7,7 +7,7 @@ import (
 // Position ...
 type Rotation struct {
 	ID    string `json:"id"`
-	angle float64
+	Angle float64
 }
 
 func (a *Rotation) Mask() uint64 {
@@ -15,7 +15,7 @@ func (a *Rotation) Mask() uint64 {
 }
 
 func (a *Rotation) WithAngle(r float64) *Rotation {
-	a.angle = r
+	a.Angle = r
 	return a
 }
 

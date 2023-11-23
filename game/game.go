@@ -94,53 +94,21 @@ func (g *Game) setup() {
 
 	player := ecs.NewEntity("player", []ecs.Component{
 		components.NewPosition().(*components.Position).WithX(0).WithY(0),
-		components.NewSize().(*components.Size).WithWidth(32).WithHeight(32),
-		components.NewVelocity().(*components.Velocity).WithX(0).WithY(0),
-		components.NewAcceleration().(*components.Acceleration).WithX(0).WithY(0),
-		components.NewMass().(*components.Mass).WithValue(800),
+		components.NewVelocity().(*components.Velocity).WithX(1000).WithY(0),
+		components.NewAcceleration().(*components.Acceleration).WithX(1000).WithY(0),
+		components.NewMass().(*components.Mass).WithValue(8),
+		components.NewRotation().(*components.Rotation).WithAngle(0),
+		components.NewShape().(*components.Shape).WithType("circle").WithRadius(20),
+		components.NewAngularVelocity().(*components.AngularVelocity).WithAngularVelocity(0),
+		components.NewAngularAcceleration().(*components.AngularAcceleration).WithAngularAcceleration(0),
+		components.NewMomentOfInertia().(*components.MomentOfInertia).WithMomentOfInertia(1),
 	})
-
-	player2 := ecs.NewEntity("player2", []ecs.Component{
-		components.NewPosition().(*components.Position).WithX(0).WithY(0),
-		components.NewSize().(*components.Size).WithWidth(32).WithHeight(32),
-		components.NewVelocity().(*components.Velocity).WithX(0).WithY(0),
-		components.NewAcceleration().(*components.Acceleration).WithX(0).WithY(0),
-		components.NewBoxCollider().(*components.BoxCollider).WithWidth(32).WithHeight(32),
-		components.NewMass().(*components.Mass).WithValue(5),
-	})
-
-	particle := ecs.NewEntity("particle", []ecs.Component{
-		components.NewPosition().(*components.Position).WithX(500).WithY(500),
-		components.NewSize().(*components.Size).WithWidth(2).WithHeight(2),
-		components.NewVelocity().(*components.Velocity).WithX(0).WithY(0),
-		components.NewAcceleration().(*components.Acceleration).WithX(0).WithY(0),
-		components.NewMass().(*components.Mass).WithValue(5),
-	})
-
-	platformCount, _ := config.GetInt("platforms:count")
-	xs, _ := config.GetSliceOfInt("platforms:x")
-	ys, _ := config.GetSliceOfInt("platforms:y")
-	ws, _ := config.GetSliceOfInt("platforms:w")
-	hs, _ := config.GetSliceOfInt("platforms:h")
-
-	for i := 0; i < platformCount; i++ {
-		platform := ecs.NewEntity("platform", []ecs.Component{
-			components.NewPosition().(*components.Position).WithX(xs[i]).WithY(ys[i]),
-			components.NewSize().(*components.Size).WithWidth(float32(ws[i])).WithHeight(float32(hs[i])),
-			components.NewBoxCollider().(*components.BoxCollider).WithWidth(int(ws[i])).WithHeight(int(hs[i])),
-		})
-
-		g.registry.AddEntities(platform)
-
-	}
 
 	renderingSystem := systems.NewRendering(g.renderer)
 	movementSystem := systems.NewMovement().(*systems.Movement).WithData(&deltaTime)
 	collisionSystem := systems.NewCollision().(*systems.Collision)
 
 	g.registry.AddEntities(player)
-	g.registry.AddEntities(player2)
-	g.registry.AddEntities(particle)
 
 	g.registry.AddSystems(renderingSystem)
 	g.registry.AddSystems(movementSystem)

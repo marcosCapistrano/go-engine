@@ -1,3 +1,3 @@
 package util
 
-const PIXELS_PER_METER = 300
+const PIXELS_PER_METER = 100
